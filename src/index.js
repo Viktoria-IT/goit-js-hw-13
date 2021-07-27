@@ -6,7 +6,7 @@ import NewQueryService from './js/query-service';
 const refs = getRefs();
 
 refs.form.addEventListener('submit', onSubmit);
-refs.moreBtn.addEventListener('click', onMoreBtn);
+
 window.addEventListener('scroll', onScroll);
 const queryService = new NewQueryService();
 
@@ -24,29 +24,9 @@ async function onSubmit(e) {
        Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
         renderGallery(hits);
     });
-
-    removeClassIshidden();
-        
+  
 }
 
-function onMoreBtn(e) {
-    addClassIshidden();
-    try {
-       queryService.fetchDate().then(({hits}) => {
-        if (hits.length === 0) {
-            return errorMessage('the end');
-        }
-           console.log(hits);
-        renderGallery(hits);
-       });
-        
-    setTimeout(() => removeClassIshidden(), 1000); 
-    }
-    catch {
-        console.log('error');
-    }   
-
-}
 
 async function onScroll() {
     
@@ -74,13 +54,6 @@ async function onScroll() {
     return;
 }
 
-function removeClassIshidden() {
-    refs.moreBtn.classList.remove('is-hiden');
-}
-
-function addClassIshidden() {
-    refs.moreBtn.classList.add('is-hiden');
-}
 
 
 function renderGallery(t) {
