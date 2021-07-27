@@ -31,8 +31,6 @@ export default class QueryService{
     set query(newQuery){
         this.inputValue = newQuery;
     }
-
-
-      
+    
 }
 

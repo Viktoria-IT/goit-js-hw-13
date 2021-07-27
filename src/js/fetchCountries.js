@@ -6,12 +6,6 @@ const BASE_URL = 'https://restcountries.eu/rest/v2';
     );
 }
 
-//  function fetchCountries(name) {
-//     const url = `https://restcountries.eu/rest/v2/name/${name}`;
-//     return fetch(url)
-//         .then(response => response.json());
-// }
-
 export { fetchCountries };
 
 
