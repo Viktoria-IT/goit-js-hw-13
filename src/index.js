@@ -1,70 +1,95 @@
-import './sass/main.scss';
-import countryCardTpl from './country-card.hbs';
-import countriesListTpl from './countries-list.hbs';
-import { fetchCountries } from './js/fetchCountries';
-
-import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
+import templateCard from './template/template-card.hbs';
+import getRefs from './js/refs';
+import './sass/main.scss';
+import NewQueryService from './js/query-service';
+const refs = getRefs();
 
-countryCardTpl({});
-countriesListTpl({});
+refs.form.addEventListener('submit', onSubmit);
+// refs.moreBtn.addEventListener('click', onMoreBtn);
+window.addEventListener('scroll', onScroll);
+const queryService = new NewQueryService();
 
-const refs = {
-    cardContainer: document.querySelector('.js-country-card-container'),
-    searchForm: document.querySelector('#search-box')
-};
-const DEBAUNCE_DELAY = 300;
 
-refs.searchForm.addEventListener('input', debounce(onSearch,DEBAUNCE_DELAY));
+async function onSubmit(e) {
+    e.preventDefault();
+    if (e.currentTarget.elements.searchQuery.value === '') {
+        return Notiflix.Notify.warning('ops! Nothing is entered!'); 
+    }
+    
+     queryService.query = e.currentTarget.elements.searchQuery.value;
+    queryService.resetPage();
+   await queryService.fetchDate().then(({ hits, totalHits })=> {
+        clearGallery();
+       Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+        renderGallery(hits);
+    });
 
-function onSearch(event) {
-    event.preventDefault();
-    const searchQuery = event.target.value;
-    refs.cardContainer.innerHTML = '';
-    if (searchQuery == "") {
+    // removeClassIshidden();
+        
+}
+
+// function onMoreBtn(e) {
+//     addClassIshidden();
+//     try {
+//        queryService.fetchDate().then(({hits}) => {
+        // if (hits.length === 0) {
+        //     return errorMessage('the end');
+        // }
+//            console.log(hits);
+//         renderGallery(hits);
+//        });
+        
+//     setTimeout(() => removeClassIshidden(), 1000); 
+//     }
+//     catch {
+//         console.log('error');
+//     }   
+
+// }
+
+async function onScroll() {
+    
+    const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
+    
+    if (scrollTop + clientHeight > scrollHeight - 10) {
+       
+        try {
+        
+            await queryService.fetchDate().then(({ hits }) => {
+        
+                if (hits.length === 0) {
+                    
+                }
+                renderGallery(hits);
+            });
+        }
+        
+        catch (error) {
+            Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
+                   
+        }
         return;
-    };
-
-    fetchCountries(searchQuery)
-        .then(countries => {
-            if (countries.length === 1) {
-                renderCountryCard(countries);
-            }
-            if (countries.length >= 2 && countries.length <= 10) {
-                renderCountriesListTpl(countries);
-            }
-            if (countries.length > 10) {
-               Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');         
-            }
-            if (countries.status === 404) {
-                onFetchError();        
-            }             
-    })
-    .catch(onFetchError);
+    }
+    return;
 }
- 
+// function removeClassIshidden() {
+//     refs.moreBtn.classList.remove('is-hiden');
+// }
 
-function renderCountriesListTpl(countries ) {    
-    const list = countriesListTpl(countries);    
-    refs.cardContainer.innerHTML = list;
+// function addClassIshidden() {
+//     refs.moreBtn.classList.add('is-hiden');
+// }
+
+
+
+
+// You can type your text in String format.Notiflix.Notify.Failure('Qui timide rogat docet negare');
+function renderGallery(t) {
+    refs.gallery.insertAdjacentHTML('beforeend', templateCard(t));
 
 }
 
-
-
-function renderCountryCard(countries) {
-    
-    const countryExemplar = countries[0];
-  
-    countryExemplar.languages = countryExemplar.languages.map(language=>language.name).join(', '); 
-    
-    const markup = countryCardTpl(countryExemplar);
-    refs.cardContainer.innerHTML = markup;
-}
- 
-
-
-
-function onFetchError(error) {
-    Notiflix.Notify.failure('Oops, there is no country with that name');
+function clearGallery() {
+    refs.gallery.innerHTML = '';
 }

@@ -3,10 +3,10 @@
   "version": "1.1.0",
   "description": "",
   "main": "index.js",
-  "homepage": "https://goitacademy.github.io/parcel-project-template",
+  "homepage": "https://Viktoria-IT.github.io/goit-js-hw-13/",
   "scripts": {
     "dev": "parcel src/*.html",
-    "build": "parcel build src/*.html --public-url /parcel-project-template/"
+    "build": "parcel build src/*.html --public-url /goit-js-hw-13/"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
     "url": "https://github.com/goitacademy/parcel-project-template/issues"
   },
   "devDependencies": {
+    "json-server": "^0.16.3",
     "parcel-bundler": "^1.12.5",
     "parcel-plugin-handlebars-precompile": "^1.0.2",
     "parcel-plugin-nuke-dist": "^1.0.1",
@@ -26,6 +27,10 @@
     "sass": "^1.32.8"
   },
   "dependencies": {
-    "notiflix": "^3.0.1"
+    "axios": "^0.21.1",
+    "handlebars": "^4.7.7",
+    "lodash.debounce": "^4.0.8",
+    "notiflix": "^3.0.1",
+    "sweetalert2": "^11.0.18"
   }
 }
